@@ -1302,10 +1302,12 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    try {
-      await supabase.from("waitlist").insert({ email });
+    const { error } = await supabase.from("waitlist").insert({ email });
+    if (error) {
+      console.error("Supabase insert error:", error);
+    } else {
       onSignup?.();
-    } catch (_) {}
+    }
     // Also send to Formspree for email notifications
     try {
       await fetch("https://formspree.io/f/xojkdbpr", {
