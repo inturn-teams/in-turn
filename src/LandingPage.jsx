@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { supabase } from "./supabase";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -1292,7 +1293,7 @@ function TiltCard({ children, className, style }) {
   );
 }
 
-function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkInput }) {
+function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkInput, onSignup }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1301,7 +1302,11 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    // Replace YOUR_FORM_ID with your Formspree ID: https://formspree.io
+    try {
+      await supabase.from("waitlist").insert({ email });
+      onSignup?.();
+    } catch (_) {}
+    // Also send to Formspree for email notifications
     try {
       await fetch("https://formspree.io/f/xojkdbpr", {
         method: "POST",
@@ -1341,6 +1346,16 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
 
 export default function LandingPage() {
   const [showModal, setShowModal] = useState(false);
+  const [waitlistCount, setWaitlistCount] = useState(50);
+
+  const fetchCount = async () => {
+    const { count } = await supabase
+      .from("waitlist")
+      .select("*", { count: "exact", head: true });
+    if (count !== null) setWaitlistCount(Math.max(50, count));
+  };
+
+  useEffect(() => { fetchCount(); }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -1444,6 +1459,7 @@ export default function LandingPage() {
                 submitClass="lp-submit"
                 successClass="lp-success"
                 privacyClass="lp-privacy"
+                onSignup={fetchCount}
               />
               <div className="lp-privacy">No spam. We'll only reach out with launch updates.</div>
               <div className="lp-waitlist-social">
@@ -1453,7 +1469,7 @@ export default function LandingPage() {
                   <div className="lp-waitlist-avatar" style={{background:'#FF9500'}}>S</div>
                   <div className="lp-waitlist-avatar" style={{background:'#003168'}}>M</div>
                 </div>
-                <span className="lp-waitlist-text">Join <strong>500+</strong> students already on the waitlist</span>
+                <span className="lp-waitlist-text">Join <strong>{waitlistCount}+</strong> students already on the waitlist</span>
               </div>
             </div>
           </div>
@@ -1627,6 +1643,7 @@ export default function LandingPage() {
             successClass="lp-cta-success"
             privacyClass="lp-cta-privacy"
             darkInput
+            onSignup={fetchCount}
           />
           <div className="lp-cta-privacy">No spam. Unsubscribe anytime.</div>
         </div>
@@ -1652,6 +1669,7 @@ export default function LandingPage() {
               submitClass="lp-submit"
               successClass="lp-success"
               privacyClass="lp-privacy"
+              onSignup={fetchCount}
             />
           </div>
         </div>
