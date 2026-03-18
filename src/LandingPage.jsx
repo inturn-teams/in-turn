@@ -1302,7 +1302,7 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
     e.preventDefault();
     if (!email.trim()) return;
     setLoading(true);
-    const { error } = await supabase.from("waitlist").insert({ email });
+    const { error } = await supabase.from("waitlist").insert({ Email: email });
     if (error) {
       console.error("Supabase insert error:", error);
     } else {
