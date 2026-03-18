@@ -1,15 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0a0a0a"/>
-      <stop offset="100%" style="stop-color:#111827"/>
-    </linearGradient>
     <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#8b5cf6"/>
+      <stop offset="0%" style="stop-color:#2ddd72"/>
+      <stop offset="100%" style="stop-color:#1DB954"/>
     </linearGradient>
+    <radialGradient id="dotfade" cx="50%" cy="50%" r="50%">
+      <stop offset="20%" style="stop-color:#000000;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(0,0,0,0.07)"/>
+    </pattern>
+    <mask id="dotmask">
+      <ellipse cx="600" cy="315" rx="750" ry="400" fill="url(#dotfade)"/>
+    </mask>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -18,50 +24,45 @@
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="#F5F5F7"/>
 
-  <!-- Subtle grid lines -->
-  <line x1="0" y1="210" x2="1200" y2="210" stroke="#1f2937" stroke-width="1"/>
-  <line x1="0" y1="420" x2="1200" y2="420" stroke="#1f2937" stroke-width="1"/>
-  <line x1="400" y1="0" x2="400" y2="630" stroke="#1f2937" stroke-width="1"/>
-  <line x1="800" y1="0" x2="800" y2="630" stroke="#1f2937" stroke-width="1"/>
+  <!-- Dot grid (masked to fade at edges) -->
+  <rect width="1200" height="630" fill="url(#dots)" mask="url(#dotmask)"/>
 
-  <!-- Accent glow blob -->
-  <ellipse cx="600" cy="315" rx="320" ry="200" fill="#6366f1" fill-opacity="0.06"/>
-
-  <!-- Logo mark (GPS turn arrow, scaled up ~4x from original 24px viewbox) -->
-  <g transform="translate(80, 60) scale(4.2)" filter="url(#glow)">
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="url(#accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M7 18 L7 10 Q7 6 11 6 L17 6"/>
-      <polyline points="14,3 17,6 14,9"/>
-    </svg>
-  </g>
+  <!-- Left accent bar -->
+  <rect x="80" y="180" width="6" height="110" rx="3" fill="url(#accent)"/>
 
   <!-- "In Turn" wordmark -->
-  <text x="80" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="92" font-weight="700" fill="white" letter-spacing="-3">In Turn</text>
-
-  <!-- Accent underline -->
-  <rect x="80" y="218" width="320" height="4" rx="2" fill="url(#accent)"/>
+  <text x="104" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="96" font-weight="700" fill="#1D1D1F" letter-spacing="-3">In Turn</text>
 
   <!-- Tagline -->
-  <text x="80" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="400" fill="#9ca3af" letter-spacing="0">The career platform for Canadian students</text>
-  <text x="80" y="334" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="400" fill="#9ca3af" letter-spacing="0">and new graduates.</text>
+  <text x="104" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="400" fill="#6E6E73">The career platform for Canadian students and new graduates.</text>
 
   <!-- Feature pills -->
-  <g transform="translate(80, 390)">
-    <!-- Resume Tailor pill -->
-    <rect width="230" height="48" rx="24" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-    <text x="115" y="30" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" fill="#e5e7eb">Resume Tailor</text>
+  <g transform="translate(104, 370)">
+    <rect width="218" height="44" rx="22" fill="white" stroke="#e5e5e7" stroke-width="1.5"/>
+    <text x="109" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#1D1D1F">Resume Tailor</text>
 
-    <!-- Internship Finder pill -->
-    <rect x="250" width="260" height="48" rx="24" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-    <text x="380" y="30" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" fill="#e5e7eb">Internship Finder</text>
+    <rect x="238" width="240" height="44" rx="22" fill="white" stroke="#e5e5e7" stroke-width="1.5"/>
+    <text x="358" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#1D1D1F">Internship Finder</text>
 
-    <!-- App Tracker pill -->
-    <rect x="530" width="270" height="48" rx="24" fill="#1f2937" stroke="#374151" stroke-width="1"/>
-    <text x="665" y="30" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" fill="#e5e7eb">Application Tracker</text>
+    <rect x="498" width="262" height="44" rx="22" fill="white" stroke="#e5e5e7" stroke-width="1.5"/>
+    <text x="629" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#1D1D1F">Application Tracker</text>
+  </g>
+
+  <!-- Logo mark — right side -->
+  <g transform="translate(980, 210)" filter="url(#glow)">
+    <!-- Outer circle background -->
+    <circle cx="110" cy="110" r="110" fill="white" opacity="0.7"/>
+    <circle cx="110" cy="110" r="110" fill="none" stroke="#e5e5e7" stroke-width="1.5"/>
+
+    <!-- GPS turn arrow scaled to fit circle -->
+    <g transform="translate(110,110) scale(7) translate(-12,-12)">
+      <path d="M7 18 L7 10 Q7 6 11 6 L17 6" fill="none" stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="14,3 17,6 14,9" fill="none" stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
   </g>
 
   <!-- Domain -->
-  <text x="1120" y="590" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#6b7280">inturn.ca</text>
+  <text x="104" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" fill="#6E6E73">inturn.ca</text>
 </svg>
