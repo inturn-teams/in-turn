@@ -991,6 +991,11 @@ const STYLES = `
     .lp-cta-form { flex-direction: column; }
     .lp-footer { flex-direction: column; gap: 8px; padding: 20px 24px; text-align: center; }
     .lp-launch { padding: 12px 20px; font-size: 12px; flex-wrap: wrap; justify-content: center; }
+    .lp-faq-section { padding: 56px 24px; }
+    .lp-demo-title { font-size: 24px; }
+    .lp-at-board { grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 10px; }
+    .lp-modal { padding: 28px 20px; }
+    .lp-waitlist-social { flex-direction: column; gap: 6px; }
   }
 `;
 
@@ -1038,7 +1043,7 @@ function ResumeTailorDemo() {
         <span className="lp-app-bar-title">Resume Tailor · In Turn</span>
       </div>
       <div style={{padding:14, display:'flex', flexDirection:'column', gap:10}}>
-        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:10}}>
           <div>
             <div className="lp-rt-label">Your Resume Bullet</div>
             <div className="lp-rt-box">Helped run social media accounts and responded to customer comments.</div>
