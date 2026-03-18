@@ -941,6 +941,7 @@ const STYLES = `
     .lp-if-list { width: 100%; height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
     .lp-if-desktop { display: none; }
     .lp-if-mobile { display: block; }
+    .lp-demo-section.rev .lp-demo-text { order: -1 !important; }
     .lp-at-board { grid-template-columns: repeat(2,1fr); }
   }
 
@@ -1322,7 +1323,7 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
   }
 
   return (
-    <form style={{ display: "flex", gap: 10, maxWidth: 480, margin: "0 auto" }} onSubmit={handleSubmit}>
+    <form className="lp-form" onSubmit={handleSubmit}>
       <input
         className={inputClass}
         type="email"
