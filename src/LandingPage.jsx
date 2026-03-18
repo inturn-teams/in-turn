@@ -1296,6 +1296,7 @@ function TiltCard({ children, className, style }) {
 function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkInput, onSignup }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [alreadyOnList, setAlreadyOnList] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -1304,18 +1305,22 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
     setLoading(true);
     const { error } = await supabase.from("waitlist").insert({ Email: email });
     if (error) {
-      console.error("Supabase insert error:", error);
+      if (error.code === "23505") {
+        setAlreadyOnList(true);
+      } else {
+        console.error("Supabase insert error:", error);
+      }
     } else {
       onSignup?.();
+      // Also send to Formspree for email notifications
+      try {
+        await fetch("https://formspree.io/f/xojkdbpr", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ email, source: "inturn-waitlist" }),
+        });
+      } catch (_) {}
     }
-    // Also send to Formspree for email notifications
-    try {
-      await fetch("https://formspree.io/f/xojkdbpr", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, source: "inturn-waitlist" }),
-      });
-    } catch (_) {}
     setSubmitted(true);
     setLoading(false);
   };
@@ -1323,7 +1328,7 @@ function EmailForm({ inputClass, submitClass, successClass, privacyClass, darkIn
   if (submitted) {
     return (
       <div className={successClass}>
-        You're on the list.
+        {alreadyOnList ? "You're already on the list." : "You're on the list."}
         <span>We'll notify you when In Turn launches in January 2027.</span>
       </div>
     );
