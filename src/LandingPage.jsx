@@ -934,9 +934,9 @@ const STYLES = `
   }
 
   @media (max-width: 768px) {
-    .lp-demo-section { grid-template-columns: 1fr; padding: 56px 24px; gap: 32px; }
-    .lp-demo-section.rev .lp-demo-text { order: 0; }
-    .lp-demo-section.rev .lp-demo-ui  { order: 0; }
+    .lp-demo-section,
+    .lp-demo-section.rev { grid-template-columns: 1fr !important; padding: 56px 24px; gap: 32px; }
+    .lp-demo-section.rev .lp-demo-text { order: -1 !important; }
     .lp-if-window { flex-direction: column; height: auto; }
     .lp-if-list { width: 100%; height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
     .lp-if-desktop { display: none; }
