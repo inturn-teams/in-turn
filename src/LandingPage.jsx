@@ -18,12 +18,14 @@ const STYLES = `
     --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
+  html, body { overflow-x: hidden; }
   .lp {
     min-height: 100vh;
     background: var(--bg);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
     color: var(--text);
+    overflow-x: hidden;
   }
 
   /* ── NAV ── */
@@ -849,6 +851,8 @@ const STYLES = `
 
   /* Internship Finder */
   .lp-if-window { display: flex; height: 340px; overflow: hidden; }
+  .lp-if-desktop { display: flex; height: 340px; overflow: hidden; }
+  .lp-if-mobile { display: none; }
   .lp-if-list { width: 210px; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
   .lp-if-tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--border); }
   .lp-tab-btn {
@@ -935,6 +939,8 @@ const STYLES = `
     .lp-demo-section.rev .lp-demo-ui  { order: 0; }
     .lp-if-window { flex-direction: column; height: auto; }
     .lp-if-list { width: 100%; height: 180px; border-right: none; border-bottom: 1px solid var(--border); }
+    .lp-if-desktop { display: none; }
+    .lp-if-mobile { display: block; }
     .lp-at-board { grid-template-columns: repeat(2,1fr); }
   }
 
@@ -991,6 +997,8 @@ const STYLES = `
     .lp-cta-form { flex-direction: column; }
     .lp-footer { flex-direction: column; gap: 8px; padding: 20px 24px; text-align: center; }
     .lp-launch { padding: 12px 20px; font-size: 12px; flex-wrap: wrap; justify-content: center; }
+    .lp-submit { width: 100%; justify-content: center; }
+    .lp-app-window { max-width: 100%; overflow-x: hidden; }
     .lp-faq-section { padding: 56px 24px; }
     .lp-demo-title { font-size: 24px; }
     .lp-at-board { grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 10px; }
@@ -1086,23 +1094,25 @@ const IF_JOBS = [
 function scoreColor(s) { return s >= 80 ? 'var(--green)' : s >= 70 ? '#CC7700' : 'var(--muted)'; }
 
 function InternshipFinderDemo() {
-  const [selected, setSelected] = useState(IF_JOBS[0]);
+  const [selected, setSelected] = useState(null);
   const [tab, setTab] = useState('all');
   const jobs = tab === 'high' ? IF_JOBS.filter(j => j.score >= 80) : IF_JOBS;
+  const toggle = (j) => setSelected(selected?.id === j.id ? null : j);
   return (
     <div className="lp-app-window lp-demo-ui">
       <div className="lp-app-bar">
         <div className="lp-app-dot" style={{background:'#FF5F57'}}/><div className="lp-app-dot" style={{background:'#FFBD2E'}}/><div className="lp-app-dot" style={{background:'#28CA42'}}/>
         <span className="lp-app-bar-title">Internship Finder · In Turn</span>
       </div>
-      <div className="lp-if-window">
-        <div className="lp-if-list">
+      {/* Desktop: side-by-side */}
+      <div className="lp-if-desktop">
+        <div className="lp-if-list" style={{width:210,borderRight:'1px solid var(--border)',display:'flex',flexDirection:'column',flexShrink:0}}>
           <div className="lp-if-tabs">
             {[['all','All'],['high','High Match']].map(([k,l]) => (
               <button key={k} className={`lp-tab-btn${tab===k?' active':''}`} onClick={() => setTab(k)}>{l}</button>
             ))}
           </div>
-          <div className="lp-if-jobs">
+          <div className="lp-if-jobs" style={{overflowY:'auto',flex:1}}>
             {jobs.map(j => (
               <div key={j.id} className={`lp-job-row${selected?.id===j.id?' active':''}`} onClick={() => setSelected(j)}>
                 <div className="lp-job-avatar" style={{background:j.color}}>{j.init}</div>
@@ -1115,29 +1125,63 @@ function InternshipFinderDemo() {
             ))}
           </div>
         </div>
-        {selected && (
+        {(selected || IF_JOBS[0]) && (() => { const s = selected || IF_JOBS[0]; return (
           <div className="lp-if-detail">
             <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
-              <div className="lp-job-avatar lg" style={{background:selected.color}}>{selected.init}</div>
+              <div className="lp-job-avatar lg" style={{background:s.color}}>{s.init}</div>
               <div>
-                <div style={{fontWeight:700,fontSize:13,letterSpacing:'-0.02em'}}>{selected.role}</div>
-                <div style={{fontSize:11,color:'var(--muted)'}}>{selected.co} · {selected.loc}</div>
+                <div style={{fontWeight:700,fontSize:13,letterSpacing:'-0.02em'}}>{s.role}</div>
+                <div style={{fontSize:11,color:'var(--muted)'}}>{s.co} · {s.loc}</div>
               </div>
             </div>
             <div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:12}}>
-              <span className="lp-detail-chip green">Match: {selected.score}%</span>
-              <span className="lp-detail-chip">{selected.salary}</span>
-              <span className="lp-detail-chip">{selected.loc}</span>
+              <span className="lp-detail-chip green">Match: {s.score}%</span>
+              <span className="lp-detail-chip">{s.salary}</span>
+              <span className="lp-detail-chip">{s.loc}</span>
             </div>
-            <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.65,marginBottom:12}}>{selected.desc}</div>
+            <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.65,marginBottom:12}}>{s.desc}</div>
             <div style={{fontSize:11,color:'var(--muted)',marginBottom:4,display:'flex',justifyContent:'space-between'}}>
-              <span>Match score</span><span style={{fontWeight:600,color:scoreColor(selected.score)}}>{selected.score}/100</span>
+              <span>Match score</span><span style={{fontWeight:600,color:scoreColor(s.score)}}>{s.score}/100</span>
             </div>
-            <div className="lp-match-bar">
-              <div className="lp-match-fill" style={{width:`${selected.score}%`,background:scoreColor(selected.score)}}/>
-            </div>
+            <div className="lp-match-bar"><div className="lp-match-fill" style={{width:`${s.score}%`,background:scoreColor(s.score)}}/></div>
           </div>
-        )}
+        );})()}
+      </div>
+      {/* Mobile: stacked expandable list */}
+      <div className="lp-if-mobile">
+        <div className="lp-if-tabs" style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',display:'flex',gap:4}}>
+          {[['all','All'],['high','High Match']].map(([k,l]) => (
+            <button key={k} className={`lp-tab-btn${tab===k?' active':''}`} onClick={() => setTab(k)}>{l}</button>
+          ))}
+        </div>
+        {jobs.map(j => (
+          <div key={j.id}>
+            <div className={`lp-job-row${selected?.id===j.id?' active':''}`} onClick={() => toggle(j)} style={{padding:'12px 14px'}}>
+              <div className="lp-job-avatar" style={{background:j.color}}>{j.init}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="lp-job-row-title">{j.role}</div>
+                <div className="lp-job-row-co">{j.co} · {j.loc}</div>
+              </div>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <div className="lp-job-score" style={{color:scoreColor(j.score)}}>{j.score}</div>
+                <span style={{fontSize:10,color:'var(--muted)'}}>{selected?.id===j.id ? '▲' : '▼'}</span>
+              </div>
+            </div>
+            {selected?.id===j.id && (
+              <div style={{padding:'10px 14px 14px',background:'var(--bg)',borderBottom:'1px solid var(--border)',animation:'lpFadeUp 0.2s ease both'}}>
+                <div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:10}}>
+                  <span className="lp-detail-chip green">Match: {j.score}%</span>
+                  <span className="lp-detail-chip">{j.salary}</span>
+                </div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.65,marginBottom:10}}>{j.desc}</div>
+                <div style={{fontSize:11,color:'var(--muted)',marginBottom:4,display:'flex',justifyContent:'space-between'}}>
+                  <span>Match score</span><span style={{fontWeight:600,color:scoreColor(j.score)}}>{j.score}/100</span>
+                </div>
+                <div className="lp-match-bar"><div className="lp-match-fill" style={{width:`${j.score}%`,background:scoreColor(j.score)}}/></div>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
